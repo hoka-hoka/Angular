@@ -1,16 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AppComponent } from './app.component';
+import AppComponent from './app.component';
+import UISelectBooleanButtonModule from './components/ui-select-boolean-button/ui-select-boolean-button.module';
+import UIDropDownModule from './components/ui-drop-down/ui-drop-down.module';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        UISelectBooleanButtonModule,
+        UIDropDownModule,
       ],
-      declarations: [
-        AppComponent
-      ],
+      providers: [],
+      declarations: [AppComponent],
     }).compileComponents();
   });
 
@@ -18,18 +21,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'AUI'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('AUI');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('AUI app is running!');
   });
 });

@@ -1,0 +1,24 @@
+@import "./src/app/shared/style/button.scss";
+
+.select-button {
+  .button {
+    &:not(:first-child) {
+      border-radius: 0 20px 20px 0;
+    }
+
+    &:not(:last-child) {
+      border-right: unset;
+      border-radius: 20px 0 0 20px;
+    }
+
+    &:not(:last-child):not(:first-child) {
+      border-radius: unset;
+    }
+
+    &_active {
+      color: var(--white);
+      background-color: var(--slateblue);
+      border: unset;
+    }
+  }
+}

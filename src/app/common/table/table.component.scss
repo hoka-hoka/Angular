@@ -1,0 +1,9 @@
+:host::ng-deep {
+  .table {
+    table-layout: fixed;
+    overflow-x: auto;
+    white-space: normal;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+}

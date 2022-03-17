@@ -1,0 +1,9 @@
+<button
+  class="button"
+  [ngClass]="[buttonType ? 'button_' + buttonType : '', action ? 'button_active' : '']"
+  type="button"
+  data-test-id="check-action"
+  (click)="onClick($event)"
+>
+  {{ btnText }}
+</button>

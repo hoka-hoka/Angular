@@ -1,0 +1,13 @@
+<table class="table">
+  <ng-container *ngFor="let detail of details">
+    <thead class="table__thead" *ngIf="detail.template === 'header'">
+      <ng-container
+        *ngTemplateOutlet="detail.templateRef; context: { dataItem: dataItem }"
+      >
+      </ng-container>
+    </thead>
+    <tbody class="table__tbody" *ngIf="detail.template === 'body'">
+      <ng-container *ngTemplateOutlet="detail.templateRef"></ng-container>
+    </tbody>
+  </ng-container>
+</table>

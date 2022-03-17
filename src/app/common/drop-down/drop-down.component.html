@@ -1,0 +1,54 @@
+<div
+  class="drop-down"
+  data-test-id="test"
+  [autoScrollElement]="scrollOptions"
+  [ngClass]="{ 'drop-down_active': action }"
+  (keydown)="onKeyDownPanel($event)"
+  role="button"
+  aria-expanded="true"
+  aria-haspopup="true"
+  #dropDown
+  autoFocusOut
+  tabindex="0"
+>
+  <input
+    class="drop-down__field"
+    [id]="idFor"
+    [ngModel]="curOption?.name"
+    [placeholder]="placeHolder"
+    (click)="onClickPanel($event)"
+    type="text"
+    autocomplete="off"
+    tabindex="-1"
+    readonly
+  />
+  <button class="drop-down__btn" (click)="onClickPanel($event)" type="button" aria-hidden="true" tabIndex="-1"></button>
+  <ng-container *ngIf="true">
+    <div class="drop-down__panel" [@openClose]="action ? 'open' : 'closed'">
+      <ng-container *ngIf="filter">
+        <div class="drop-down__filter">
+          <app-filter
+            [filterPlaceholder]="'filter text'"
+            [filterValue]="filterValue"
+            [focused]="true"
+            (callback)="callTest($event)"
+          ></app-filter>
+        </div>
+      </ng-container>
+      <div class="drop-down__options">
+        <ng-container *ngFor="let item of data; trackBy: trackOptionId">
+          <div
+            class="drop-down__item"
+            [ngClass]="{
+              'drop-down__item_focused': item.id === curOption?.id
+            }"
+            (click)="onSelectOption($event, item)"
+            role="button"
+          >
+            {{ item.name }}
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</div>

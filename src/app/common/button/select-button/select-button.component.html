@@ -1,0 +1,13 @@
+<div class="select-button">
+  <ng-container *ngFor="let item of options">
+    <button
+      class="button"
+      type="button"
+      data-test-id="check-action"
+      (click)="onClickButton(item)"
+      [ngClass]="{ button_active: item.inactive }"
+    >
+      {{ item.name }}
+    </button>
+  </ng-container>
+</div>

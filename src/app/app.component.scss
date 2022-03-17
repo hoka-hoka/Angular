@@ -1,0 +1,11 @@
+:host::ng-deep {
+  .ui {
+    padding: 10px;
+
+    &__example {
+      display: flex;
+      align-items: flex-start;
+      width: 40%;
+    }
+  }
+}

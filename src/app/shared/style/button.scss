@@ -1,0 +1,55 @@
+.button {
+  position: relative;
+  display: inline-block;
+  min-height: 38px;
+  color: var(--black-25);
+  font-size: inherit;
+  font-family: inherit;
+  background-color: transparent;
+  border: 1px solid var(--slateblue);
+  border-radius: 20px;
+  cursor: pointer;
+  min-width: 80px;
+  font-weight: bold;
+
+  @each $name in ("after", "before") {
+    &:#{$name} {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      content: "";
+    }
+  }
+
+  &:focus-visible,
+  &:hover {
+    color: var(--black-25);
+    background-color: var(--slateblue-light-98);
+    outline: none;
+  }
+
+  &_selected {
+    background-color: var(--slateblue);
+    color: var(--white);
+    font-weight: bold;
+    border: unset;
+
+    &:hover {
+      background-color: var(--slateblue-light-70);
+      color: var(--white);
+    }
+  }
+
+  &:before {
+    // background: linear-gradient(90deg, $blue, $blue-alpha);
+  }
+
+  &:after {
+    margin: 1px;
+    background-color: var(--white);
+    border-radius: 3px;
+  }
+}
