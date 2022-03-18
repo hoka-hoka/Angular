@@ -13,13 +13,6 @@ import DropDownModule from './common/drop-down/drop-down.module';
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    SharedModule,
-    DropDownModule,
-    ButtonModule,
-  ],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, DropDownModule, ButtonModule],
 })
 export class AppModule {}

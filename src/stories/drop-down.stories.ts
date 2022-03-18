@@ -1,10 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import SharedModule from 'shared/shared.module';
+import SharedModule from 'app/shared/shared.module';
 
 import { Story, Meta } from '@storybook/angular/types-6-0';
 import { moduleMetadata } from '@storybook/angular';
-import { IconSpriteModule } from 'ng-svg-icon-sprite';
+// import { IconSpriteModule } from 'ng-svg-icon-sprite';
 import { FormsModule } from '@angular/forms';
 
 import DropDownComponent from 'common/drop-down/drop-down.component';
@@ -16,10 +16,10 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [FilterComponent],
-      imports: [BrowserModule, BrowserAnimationsModule, SharedModule, IconSpriteModule, FormsModule]
-    })
+      imports: [BrowserModule, BrowserAnimationsModule, SharedModule, IconSpriteModule, FormsModule],
+    }),
   ],
-  parameters: {}
+  parameters: {},
 } as Meta;
 
 const Template: Story<DropDownComponent> = (args: DropDownComponent) => ({
@@ -27,8 +27,8 @@ const Template: Story<DropDownComponent> = (args: DropDownComponent) => ({
     options: args.options,
     placeHolder: args.placeHolder,
     action: args.action,
-    filter: args.filter
-  }
+    filter: args.filter,
+  },
 });
 
 const options = [
@@ -40,13 +40,13 @@ const options = [
   { id: 5, name: 'Vasia5' },
   { id: 6, name: 'Vasia6' },
   { id: 7, name: 'Vasia7' },
-  { id: 8, name: 'Vasia8' }
+  { id: 8, name: 'Vasia8' },
 ];
 
 export const Basic = Template.bind({});
 Basic.args = {
   options,
-  placeHolder: 'Select a option'
+  placeHolder: 'Select a option',
   // action: true
 };
 
@@ -54,7 +54,7 @@ export const Active = Template.bind({});
 Active.args = {
   options,
   placeHolder: 'Select a option',
-  action: true
+  action: true,
 };
 
 export const Filtering = Template.bind({});
@@ -62,5 +62,5 @@ Filtering.args = {
   options,
   placeHolder: 'Select a option',
   action: true,
-  filter: true
+  filter: true,
 };
