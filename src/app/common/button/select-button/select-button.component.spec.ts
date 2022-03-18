@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SelectButtonComponent } from './select-button.component';
+import SelectButtonComponent from './select-button.component';
 
 describe('SelectButtonComponent', () => {
   let component: SelectButtonComponent;
@@ -8,9 +7,8 @@ describe('SelectButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SelectButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [SelectButtonComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

@@ -1,46 +1,17 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  OnInit,
-  ElementRef,
-  ChangeDetectorRef,
-} from '@angular/core';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { Component, Input, ViewChild, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 import AutoFocusOutDirective from 'app/common/drop-down/directives/auto-focus-out.directive';
 import { ScrollOptions } from 'app/common/drop-down/directives/auto-scroll-element/auto-scroll-element.model';
 import KeyboardCodes from 'app/shared/models/keyboard-key-codes';
 import EntityName from 'app/shared/models/entity-name';
 import Option from 'app/common/drop-down/interfaces/option';
+import showOptions from './animations/show-options';
 
 @Component({
   selector: 'app-drop-down',
   templateUrl: './drop-down.component.html',
   styleUrls: ['./drop-down.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state(
-        'open',
-        style({
-          opacity: '*',
-        })
-      ),
-      state(
-        'closed',
-        style({
-          opacity: '0',
-        })
-      ),
-      transition('open <=> closed', [animate('300ms')]),
-    ]),
-  ],
+  animations: [showOptions],
 })
 export default class DropDownComponent implements OnInit {
   /**
@@ -151,9 +122,7 @@ export default class DropDownComponent implements OnInit {
    */
   public callTest(filterText: string) {
     const regexp = new RegExp(filterText.trim() || '\\d+', 'ig');
-    const newData = this.backupData.filter(
-      (option) => ~option.name.search(regexp)
-    );
+    const newData = this.backupData.filter((option) => ~option.name.search(regexp));
     this.options = filterText ? newData : this.backupData;
     this.filterValue = filterText;
     this.cdRef.detectChanges();

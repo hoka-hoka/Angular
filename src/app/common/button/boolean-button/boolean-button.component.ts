@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import ButtonType from '../default-button/model/buttonType.enum';
 
 @Component({
@@ -50,6 +44,8 @@ export default class BooleanButtonComponent {
    */
   // TODO: тип
   public onClick(value: any): void {
+    var a = 4;
+
     this.action = !this.action;
     this.btnText = this.action ? this.activeText : this.disableText;
     this.updateEvent.emit(value);

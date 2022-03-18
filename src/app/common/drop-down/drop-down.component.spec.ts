@@ -1,21 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
-import { keydown } from 'shared/tests/events.spec';
+import { keydown } from 'app/shared/tests/events.spec';
 
-import KeyboardCodes from 'shared/models/keyboard-key-codes';
+import KeyboardCodes from 'app/shared/models/keyboard-key-codes';
 
 import DropDownComponent from './drop-down.component';
-import AutoScrollElementDirective from 'shared/directives/auto-scroll-element/auto-scroll-element.directive';
-import { findEl } from 'shared/tests/tests.spec';
+import AutoScrollElementDirective from './directives/auto-scroll-element/auto-scroll-element.directive';
+import { findEl } from 'app/shared/tests/tests.spec';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('DropDownComponent', () => {
   let fixture: ComponentFixture<DropDownComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule],
-      declarations: [DropDownComponent, AutoScrollElementDirective]
+      imports: [FormsModule, BrowserAnimationsModule],
+      declarations: [DropDownComponent, AutoScrollElementDirective],
     }).compileComponents();
     fixture = TestBed.createComponent(DropDownComponent);
     fixture.detectChanges();
