@@ -8,7 +8,7 @@ import SharedModule from './shared/shared.module';
 import AppRoutingModule from './app-routing.module';
 
 import ButtonModule from './common/button/button.module';
-import DropDownModule from './common/drop-down/drop-down.module';
+import DropDownModule from './modules/drop-down/drop-down.module';
 
 @NgModule({
   bootstrap: [AppComponent],
