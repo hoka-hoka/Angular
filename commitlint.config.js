@@ -74,5 +74,3 @@ module.exports = {
     'type-enum': [2, 'always', ['⭐️', '🐞', '✅', '🚧', '♻️', '📝']],
   },
 };
-
-// git commit -m "✅ [T-1] Настрой конфигурацию проекта | Добавлен prettier, eslint, husky, lint-staged, commit-lint. Добавлены хуки pre-comit и commit-msg"
