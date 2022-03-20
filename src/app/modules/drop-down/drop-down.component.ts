@@ -2,11 +2,10 @@ import { Component, Input, ViewChild, OnInit, ElementRef, ChangeDetectorRef } fr
 
 import AutoFocusOutDirective from './directives/auto-focus-out.directive';
 import KeyboardCodes from 'app/shared/models/keyboard-key-codes';
-import EntityName from 'app/shared/models/entity-name';
-
 import showOptions from './animations/show-options';
-import DropDownOption from './interfaces/drop-down-option.interface';
 import ScrollSettings from './interfaces/scroll-settings.interface';
+import DropDownOption from './interfaces/drop-down-options.interface';
+import DropDownService from './services/drop-down.service';
 
 @Component({
   selector: 'app-drop-down',
@@ -25,7 +24,8 @@ export default class DropDownComponent implements OnInit {
     }
     directive.containsElement.subscribe((isContain: boolean) => {
       if (!isContain) {
-        this.action = false;
+        this.active = false;
+        this.updateScrollSettings({ active: false });
       }
     });
   }
@@ -38,29 +38,14 @@ export default class DropDownComponent implements OnInit {
   /**
    * Данные выпадающего списка
    */
-  @Input() public set options(values: EntityName[]) {
-    this.data = this.updateKeys(values);
-  }
-
-  /**
-   * Сеттер установка активной опции
-   */
-  @Input() public set currentOption(option: EntityName | undefined) {
-    const defaultElementNumber = -1;
-    const foundOption = this.findOptionById(option?.id);
-    if (foundOption) {
-      this.curOption = foundOption;
-    }
-    this.scrollSettings = {
-      ...this.scrollSettings,
-      activeElementNumber: foundOption?.key ?? defaultElementNumber,
-    };
+  @Input() public set options(values: DropDownOption[]) {
+    this.dropDownOptions = this.updateKeys(values);
   }
 
   /**
    * Флаг активного состояния
    */
-  @Input() public action!: boolean;
+  @Input() public active: boolean = false;
 
   /**
    * Флаг добавления поля фильтрации
@@ -80,7 +65,7 @@ export default class DropDownComponent implements OnInit {
   /**
    * Данные выпадающего списка с опорой рендеринга (key)
    */
-  public data: DropDownOption[] = [];
+  public dropDownOptions: DropDownOption[] = [];
 
   /**
    * Копия данных выпадающего списка
@@ -103,18 +88,33 @@ export default class DropDownComponent implements OnInit {
   public scrollSettings!: ScrollSettings;
 
   /**
-   *
-   * @param cdRef
+   * Сеттер установки активной опции
    */
-  constructor(private cdRef: ChangeDetectorRef) {}
+  @Input() private set currentOption(option: DropDownOption) {
+    const defaultElementNumber = -1;
+    const scrollOptions = {
+      activeElementNumber: option?.key ?? defaultElementNumber,
+    };
+    this.curOption = option;
+    this.updateScrollSettings(scrollOptions);
+  }
+
+  /**
+   * Конструктор
+   * @param cdRef Сервис обновления
+   * @param dropDownService Сервис выпадающего списка
+   */
+  constructor(private cdRef: ChangeDetectorRef, public dropDownService: DropDownService) {}
 
   public ngOnInit(): void {
-    this.scrollSettings = {
-      ...this.scrollSettings,
+    const defaultElementNumber = -1;
+    const scrollOptions = {
       className: 'drop-down__options',
-      action: this.action,
+      activeElementNumber: this.curOption?.key || defaultElementNumber,
+      active: this.active,
     };
-    this.backupData = this.data;
+    this.updateScrollSettings(scrollOptions);
+    this.backupData = this.dropDownOptions;
   }
 
   /**
@@ -123,7 +123,7 @@ export default class DropDownComponent implements OnInit {
    */
   public callTest(filterText: string) {
     const regexp = new RegExp(filterText.trim() || '\\d+', 'ig');
-    const newData = this.backupData.filter((option) => ~option.name.search(regexp));
+    const newData = this.backupData.filter((option) => ~option.value.search(regexp));
     this.options = filterText ? newData : this.backupData;
     this.filterValue = filterText;
     this.cdRef.detectChanges();
@@ -134,7 +134,6 @@ export default class DropDownComponent implements OnInit {
    * @param event Объект события
    */
   public onKeyDownPanel(event: KeyboardEvent): void {
-    event.stopPropagation();
     const keyCode = event.keyCode || event.charCode;
     switch (keyCode) {
       case KeyboardCodes.ArrowUP:
@@ -143,14 +142,16 @@ export default class DropDownComponent implements OnInit {
       case KeyboardCodes.ArrowDown:
         this.changeOption(keyCode);
         break;
-      case KeyboardCodes.Space:
-        this.toggleAction(true);
-        break;
       case KeyboardCodes.Escape:
-        this.toggleAction(false);
+        this.toggleActive(false);
+        break;
+      case KeyboardCodes.Space:
+        if (!this.filter && this.active) {
+          this.toggleActive();
+        }
         break;
       case KeyboardCodes.Enter:
-        this.toggleAction();
+        this.toggleActive();
         break;
       default:
         break;
@@ -161,40 +162,36 @@ export default class DropDownComponent implements OnInit {
    * Обработчик клика
    * @param event Объект события
    */
-  public onClickPanel(event: MouseEvent): void {
-    event.stopPropagation();
-    this.toggleAction();
+  public onClickPanel(): void {
+    this.toggleActive();
   }
 
   /**
    * Показать | скрыть панель
    */
-  public toggleAction(action?: boolean): void {
-    this.action = action ?? !this.action;
-    console.log(this.action);
-
-    if (!this.action) {
+  private toggleActive(active?: boolean): void {
+    this.active = active ?? !this.active;
+    if (!this.active) {
       this.dropDown.nativeElement.focus();
     }
-    this.scrollSettings = { ...this.scrollSettings, action: this.action };
+    this.updateScrollSettings({ active: this.active });
   }
 
   /**
-   * Переключение активной опции кликом
+   * Событие переключения активной опции кликом
    * @param event Событие клика выбора опции
    * @param option Опция
    */
-  public onSelectOption(event: MouseEvent, option: DropDownOption): void {
-    event.stopPropagation();
+  public onClickOption(event: MouseEvent, option: DropDownOption): void {
     this.currentOption = option;
-    this.toggleAction();
+    this.toggleActive();
   }
 
   /**
    * Опора рендеринга
    */
   public trackOptionId(_: number, option: DropDownOption): number {
-    return option.key;
+    return option.key as number;
   }
 
   /**
@@ -204,34 +201,27 @@ export default class DropDownComponent implements OnInit {
   private changeOption(keyCode: number): void {
     const isArrowUp = keyCode === KeyboardCodes.ArrowUP;
     const step = isArrowUp ? -1 : 1;
-    const start = isArrowUp ? 0 : this.data.length - 1;
-    if (!this.data.length) {
+    const start = isArrowUp ? 0 : this.dropDownOptions.length - 1;
+    const isBoundaryOption = this.curOption?.key === this.dropDownOptions[start].key;
+    if (isBoundaryOption) {
       return;
     }
-    if (this.curOption) {
-      const isBoundaryOption = this.curOption.key === this.data[start].key;
-      if (isBoundaryOption) {
-        return;
-      }
-      this.currentOption = this.data[this.curOption.key + step];
-    } else {
-      this.currentOption = this.data[0];
-    }
-  }
-
-  /**
-   * Найти опцию по id
-   * @param id Идентификатор опции
-   */
-  private findOptionById(id: number | undefined): DropDownOption | undefined {
-    return this.data?.find((opt) => opt.id === id);
+    const newOptionIndex = this.curOption ? (this.curOption as any).key + step : 0;
+    this.currentOption = this.dropDownOptions[newOptionIndex];
   }
 
   /**
    * Обновить ключи рендеринга
    * @param options Данные выпадающего списка
    */
-  private updateKeys(options: EntityName[]): DropDownOption[] {
+  private updateKeys(options: DropDownOption[]): DropDownOption[] {
     return options.map((opt, index) => ({ ...opt, key: index }));
+  }
+
+  /**
+   * Обновить настройки скроллинга
+   */
+  private updateScrollSettings(scrollSettings: Partial<ScrollSettings>): void {
+    this.dropDownService.updateScrollSettings(scrollSettings);
   }
 }

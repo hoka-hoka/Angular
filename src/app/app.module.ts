@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import AppComponent from './app.component';
 
@@ -13,6 +14,14 @@ import DropDownModule from './modules/drop-down/drop-down.module';
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, SharedModule, DropDownModule, ButtonModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    SharedModule,
+    DropDownModule,
+    ButtonModule,
+    HttpClientModule,
+    AngularSvgIconModule.forRoot(),
+  ],
 })
 export class AppModule {}
