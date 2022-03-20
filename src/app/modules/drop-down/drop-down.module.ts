@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-// import { IconSpriteModule } from 'ng-svg-icon-sprite';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import AutoFocusDirective from './directives/auto-focus/auto-focus.directive';
 import AutoFocusOutDirective from './directives/auto-focus-out.directive';
@@ -19,12 +18,7 @@ import FilterComponent from 'app/common/filter/filter.component';
     DropDownComponent,
     FilterComponent,
   ],
-  imports: [
-    // IconSpriteModule.forRoot({ path: 'assets/sprites/sprite.svg' }),
-    FormsModule,
-    CommonModule,
-    BrowserAnimationsModule,
-  ],
+  imports: [FormsModule, CommonModule, BrowserAnimationsModule, AngularSvgIconModule],
   exports: [DropDownComponent],
 })
 export default class DropDownModule {}

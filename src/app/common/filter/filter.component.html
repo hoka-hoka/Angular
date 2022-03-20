@@ -8,15 +8,10 @@
     (ngModelChange)="onChangeFilterValue($event)"
     type="text"
   />
-  <!-- <svg-icon-sprite
-    [attribute]="[
-      ['class', 'search__icon'],
-      ['width', '12'],
-      ['height', '12'],
-      ['aria-labelledby', 'search-field'],
-      ['role', 'img']
-    ]"
-    [src]="'search'"
-    [title]="'search icon'"
-  ></svg-icon-sprite> -->
+  <svg-icon
+    src="assets/icons/search.svg"
+    class="search__icon"
+    [svgStyle]="{ 'width.px': 12, 'height.px': 12 }"
+    [svgAriaLabel]="'search field'"
+  ></svg-icon>
 </div>

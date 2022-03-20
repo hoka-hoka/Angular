@@ -2,10 +2,7 @@ import { Component, Input, ViewChild, OnInit, ElementRef, ChangeDetectorRef } fr
 
 import AutoFocusOutDirective from './directives/auto-focus-out.directive';
 import KeyboardCodes from 'app/shared/models/keyboard-key-codes';
-import EntityName from 'app/shared/models/entity-name';
-
 import showOptions from './animations/show-options';
-
 import ScrollSettings from './interfaces/scroll-settings.interface';
 import DropDownOption from './interfaces/drop-down-options.interface';
 import DropDownService from './services/drop-down.service';
@@ -28,6 +25,7 @@ export default class DropDownComponent implements OnInit {
     directive.containsElement.subscribe((isContain: boolean) => {
       if (!isContain) {
         this.active = false;
+        this.updateScrollSettings({ active: false });
       }
     });
   }
@@ -145,7 +143,7 @@ export default class DropDownComponent implements OnInit {
         this.changeOption(keyCode);
         break;
       case KeyboardCodes.Escape:
-        this.active = false;
+        this.toggleActive(false);
         break;
       case KeyboardCodes.Space:
         if (!this.filter && this.active) {
@@ -171,13 +169,12 @@ export default class DropDownComponent implements OnInit {
   /**
    * Показать | скрыть панель
    */
-  private toggleActive(): void {
-    this.active = !this.active;
+  private toggleActive(active?: boolean): void {
+    this.active = active ?? !this.active;
     if (!this.active) {
       this.dropDown.nativeElement.focus();
     }
-    const scrollOptions = { active: this.active };
-    this.updateScrollSettings(scrollOptions);
+    this.updateScrollSettings({ active: this.active });
   }
 
   /**
