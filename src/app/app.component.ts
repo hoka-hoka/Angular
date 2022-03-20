@@ -12,16 +12,16 @@ export default class AppComponent {
     this.options = [
       {
         id: 0,
-        name: 'test1',
+        value: 'test1',
       },
       {
         id: 1,
-        name: 'test2',
+        value: 'test2',
         inactive: true,
       },
       {
         id: 2,
-        name: 'test3',
+        value: 'test3',
       },
     ];
   }

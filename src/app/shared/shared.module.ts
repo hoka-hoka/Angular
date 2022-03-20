@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 
-import AutoFocusDirective from './directives/auto-focus.directive';
-
 @NgModule({
-  declarations: [AutoFocusDirective],
-  exports: [AutoFocusDirective],
+  declarations: [],
+  exports: [],
 })
 export default class SharedModule {}

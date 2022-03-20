@@ -1,18 +1,11 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  Output,
-  EventEmitter,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export default class FilterComponent implements OnInit, AfterViewInit {
+export default class FilterComponent implements AfterViewInit {
   /**
    * Текст поиска
    */
@@ -32,8 +25,6 @@ export default class FilterComponent implements OnInit, AfterViewInit {
    * Коллбэк
    */
   @Output() public callback: EventEmitter<string> = new EventEmitter();
-
-  ngOnInit() {}
 
   ngAfterViewInit() {
     if (this.filterValue) {

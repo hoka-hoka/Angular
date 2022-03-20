@@ -57,14 +57,14 @@ export default class appAutoScrollElementDirective implements AfterViewInit, OnC
     this.scrollStep = this.calculateScrollStep();
     this.visibleElementsCount = this.calculateVisibleElementsCount();
 
-    if (this.scrollSettings.action) {
+    if (this.scrollSettings.active) {
       this.prevActiveElementNumber = this.scrollSettings.activeElementNumber;
     }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     const { previousValue, currentValue } = changes['autoScrollElement'];
-    if (!this.scrollSettings.action) {
+    if (!this.scrollSettings.active) {
       return;
     }
 

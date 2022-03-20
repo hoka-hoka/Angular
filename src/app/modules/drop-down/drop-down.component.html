@@ -1,11 +1,10 @@
 <div
   class="drop-down"
   data-test-id="test"
-  [appAutoScrollElement]="scrollSettings"
-  [ngClass]="{ 'drop-down_active': action }"
+  [ngClass]="{ 'drop-down_active': active }"
   (keydown)="onKeyDownPanel($event)"
   role="button"
-  aria-expanded="true"
+  [attr.aria-expanded]="this.active"
   aria-haspopup="true"
   #dropDown
   appAutoFocusOut
@@ -14,41 +13,48 @@
   <input
     class="drop-down__field"
     [id]="idFor"
-    [ngModel]="curOption?.name"
+    [ngModel]="curOption?.value"
     [placeholder]="placeHolder"
-    (click)="onClickPanel($event)"
+    (click)="onClickPanel()"
     type="text"
     autocomplete="off"
     tabindex="-1"
     readonly
   />
-  <button class="drop-down__btn" (click)="onClickPanel($event)" type="button" aria-hidden="true" tabIndex="-1"></button>
+  <button class="drop-down__btn" (click)="onClickPanel()" type="button" aria-hidden="true" tabIndex="-1"></button>
   <ng-container *ngIf="true">
-    <div class="drop-down__panel" [@openClose]="action ? 'open' : 'closed'">
+    <div
+      class="drop-down__panel"
+      [@openClose]="active ? 'open' : 'closed'"
+      (@openClose.start)="$event.element.style.display = 'block'"
+      (@openClose.done)="$event.element.style.display = $event.toState === 'closed' ? 'none' : false"
+    >
       <ng-container *ngIf="filter">
         <div class="drop-down__filter">
           <app-filter
             [filterPlaceholder]="'filter text'"
             [filterValue]="filterValue"
-            [focused]="true"
+            [focused]="this.active"
             (callback)="callTest($event)"
           ></app-filter>
         </div>
       </ng-container>
       <div class="drop-down__options">
-        <ng-container *ngFor="let item of data; trackBy: trackOptionId">
+        <ng-container *ngFor="let item of dropDownOptions; trackBy: trackOptionId">
           <div
             class="drop-down__item"
             [ngClass]="{
               'drop-down__item_focused': item.id === curOption?.id
             }"
-            (click)="onSelectOption($event, item)"
+            (click)="onClickOption($event, item)"
             role="button"
           >
-            {{ item.name }}
+            {{ item.value }}
           </div>
         </ng-container>
       </div>
     </div>
   </ng-container>
 </div>
+
+<input type="text" />
