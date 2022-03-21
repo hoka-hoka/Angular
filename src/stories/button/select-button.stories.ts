@@ -1,5 +1,5 @@
 import { Meta, Story } from '@storybook/angular';
-import SelectButtonComponent from 'common/button/select-button/select-button.component';
+import SelectButtonComponent from 'app/common/button/select-button/select-button.component';
 
 export default {
   title: 'Example/Buttons/SelectButton',
@@ -8,33 +8,33 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'Список кнопок'
-      }
-    }
-  }
+        component: 'Список кнопок',
+      },
+    },
+  },
 } as Meta;
 
 export const Default: Story<SelectButtonComponent> = (args: SelectButtonComponent) => ({
-  props: { options: args.options }
+  props: { options: args.options },
 });
 
 Default.args = {
   options: [
     {
       id: 0,
-      name: 'test1'
+      name: 'test1',
     },
     {
       id: 1,
-      name: 'test2'
+      name: 'test2',
     },
     {
       id: 2,
-      name: 'test3'
+      name: 'test3',
     },
     {
       id: 3,
-      name: 'test4'
-    }
-  ]
+      name: 'test4',
+    },
+  ],
 };
