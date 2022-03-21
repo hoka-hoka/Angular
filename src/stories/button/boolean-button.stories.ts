@@ -1,7 +1,6 @@
 import { Meta, Story } from '@storybook/angular';
-
-import BooleanButtonComponent from 'common/button/boolean-button/boolean-button.component';
-import ButtonType from 'common/button/default-button/model/buttonType.enum';
+import BooleanButtonComponent from 'app/common/button/boolean-button/boolean-button.component';
+import ButtonType from 'app/common/button/default-button/model/buttonType.enum';
 
 export default {
   title: 'Example/Buttons/BooleanButton',
@@ -9,15 +8,15 @@ export default {
   argTypes: {
     disableText: {
       table: {
-        category: 'Text'
-      }
+        category: 'Text',
+      },
     },
 
     activeText: {
       table: {
-        category: 'Text'
-      }
-    }
+        category: 'Text',
+      },
+    },
   },
 
   /**
@@ -30,10 +29,10 @@ export default {
       },
 
       description: {
-        component: 'Переключаемая кнопка'
-      }
-    }
-  }
+        component: 'Переключаемая кнопка',
+      },
+    },
+  },
 } as Meta;
 
 export const Default: Story<BooleanButtonComponent> = (args: BooleanButtonComponent) => ({
@@ -42,8 +41,8 @@ export const Default: Story<BooleanButtonComponent> = (args: BooleanButtonCompon
     activeText: 'on',
     buttonType: args.buttonType,
     action: args.action,
-    btnText: args.action ? args.activeText : args.disableText
-  }
+    btnText: args.action ? args.activeText : args.disableText,
+  },
 });
 
 /**
@@ -52,7 +51,7 @@ export const Default: Story<BooleanButtonComponent> = (args: BooleanButtonCompon
 Default.args = {
   disableText: 'off',
   activeText: 'on',
-  action: false
+  action: false,
 };
 
 /**
@@ -64,5 +63,5 @@ Active.args = {
   buttonType: ButtonType.access,
   disableText: 'off',
   activeText: 'on',
-  action: true
+  action: true,
 };

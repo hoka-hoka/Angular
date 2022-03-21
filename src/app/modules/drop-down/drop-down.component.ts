@@ -50,7 +50,7 @@ export default class DropDownComponent implements OnInit {
   /**
    * Флаг добавления поля фильтрации
    */
-  @Input() filter?: boolean;
+  @Input() filter: boolean = false;
 
   /**
    * Текст фильтрации
