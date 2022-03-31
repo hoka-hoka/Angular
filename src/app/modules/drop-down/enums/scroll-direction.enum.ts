@@ -3,9 +3,13 @@
  */
 enum ScrollDirection {
   /**
-   *
+   * Вверх
    */
   top,
+
+  /**
+   * Вниз
+   */
   bottom,
 }
 

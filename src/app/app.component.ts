@@ -6,23 +6,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export default class AppComponent {
-  public options: any;
+  public options: any = [];
 
   constructor() {
-    this.options = [
-      {
-        id: 0,
-        value: 'test1',
-      },
-      {
-        id: 1,
-        value: 'test2',
-        inactive: true,
-      },
-      {
-        id: 2,
-        value: 'test3',
-      },
-    ];
+    for (let i = 0; i < 10; i++) {
+      this.options.push({
+        id: i,
+        value: 'test' + i,
+      });
+    }
   }
 }

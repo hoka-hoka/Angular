@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
-const showOptions = trigger('openClose', [
+const openClosePanel = trigger('openClosePanel', [
   state(
     'open',
     style({
@@ -16,4 +16,4 @@ const showOptions = trigger('openClose', [
   transition('open <=> closed', [animate('300ms')]),
 ]);
 
-export default showOptions;
+export default openClosePanel;

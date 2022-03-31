@@ -1,13 +1,19 @@
+import ScrollDirection from '../enums/scroll-direction.enum';
 import ViewportBoundaries from './viewport-boundaries.interface';
 
 /**
  * Настройки скроллинга
  */
-export default interface ScrollSettings {
+export default interface ScrollSetting {
   /**
-   * Класс выпадающей панели
+   * Элемент выпадающего списка
    */
-  className: string;
+  dropDownListElement: HTMLElement;
+
+  /**
+   * Число элементов списка
+   */
+  optionsLength: number;
 
   /**
    * Номер активного элемента
@@ -20,7 +26,7 @@ export default interface ScrollSettings {
   viewportBoundaries?: ViewportBoundaries;
 
   /**
-   * Флаг раскрытости панели
+   * Флаг открытости панели
    */
   active?: boolean;
 }

@@ -1,19 +1,21 @@
-import { Component, Input, ViewChild, OnInit, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ViewChild, OnInit, AfterViewInit, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 import AutoFocusOutDirective from './directives/auto-focus-out.directive';
 import KeyboardCodes from 'app/shared/models/keyboard-key-codes';
-import showOptions from './animations/show-options';
-import ScrollSettings from './interfaces/scroll-settings.interface';
+import openClosePanel from './animations/open-close-panel';
 import DropDownOption from './interfaces/drop-down-options.interface';
-import DropDownService from './services/drop-down.service';
+import AutoScroll from './classes/auto-scroll';
+import { AnimationEvent } from '@angular/animations';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-drop-down',
   templateUrl: './drop-down.component.html',
   styleUrls: ['./drop-down.component.scss'],
-  animations: [showOptions],
+  animations: [openClosePanel],
 })
-export default class DropDownComponent implements OnInit {
+export default class DropDownComponent implements OnInit, AfterViewInit {
   /**
    * Проверка наличия фокуса в пределах хост-узла
    */
@@ -25,7 +27,7 @@ export default class DropDownComponent implements OnInit {
     directive.containsElement.subscribe((isContain: boolean) => {
       if (!isContain) {
         this.active = false;
-        this.updateScrollSettings({ active: false });
+        this.autoScroll?.updateScrollSettings({ active: false });
       }
     });
   }
@@ -58,9 +60,14 @@ export default class DropDownComponent implements OnInit {
   @Input() filterValue!: string;
 
   /**
-   * Выпадающий список
+   * Элемента выпадающего списка
    */
-  @ViewChild('dropDown') public dropDown!: ElementRef<HTMLElement>;
+  @ViewChild('dropDown') public dropDownRef!: ElementRef<HTMLElement>;
+
+  /**
+   * Элемент опций выпадающего списка
+   */
+  @ViewChild('dropDownList') public dropDownListRef!: ElementRef<HTMLElement>;
 
   /**
    * Данные выпадающего списка с опорой рендеринга (key)
@@ -73,19 +80,19 @@ export default class DropDownComponent implements OnInit {
   public backupData: DropDownOption[] = [];
 
   /**
+   * Идентификатор текстовой метки
+   */
+  public idFor: string = 'idFor';
+
+  /**
    * Активная опция
    */
   public curOption?: DropDownOption;
 
   /**
-   * Идентификатор текстовой метки
+   * Интерфейс скроллинга
    */
-  public idFor?: string = 'idFor';
-
-  /**
-   * Опции для ползунка прокрутки
-   */
-  public scrollSettings!: ScrollSettings;
+  public autoScroll?: AutoScroll;
 
   /**
    * Сеттер установки активной опции
@@ -96,32 +103,37 @@ export default class DropDownComponent implements OnInit {
       activeElementNumber: option?.key ?? defaultElementNumber,
     };
     this.curOption = option;
-    this.updateScrollSettings(scrollOptions);
+    if (this.autoScroll) {
+      this.autoScroll.updateScrollSettings(scrollOptions);
+    }
   }
 
   /**
    * Конструктор
    * @param cdRef Сервис обновления
-   * @param dropDownService Сервис выпадающего списка
    */
-  constructor(private cdRef: ChangeDetectorRef, public dropDownService: DropDownService) {}
+  constructor(private cdRef: ChangeDetectorRef) {}
 
   public ngOnInit(): void {
-    const defaultElementNumber = -1;
-    const scrollOptions = {
-      className: 'drop-down__options',
-      activeElementNumber: this.curOption?.key || defaultElementNumber,
-      active: this.active,
-    };
-    this.updateScrollSettings(scrollOptions);
     this.backupData = this.dropDownOptions;
+  }
+
+  public ngAfterViewInit(): void {
+    const defaultElementNumber = -1;
+    const defaultScrollSettings = {
+      dropDownListElement: this.dropDownListRef.nativeElement,
+      optionsLength: this.dropDownOptions.length,
+      activeElementNumber: this.curOption?.key || defaultElementNumber,
+    };
+    this.autoScroll = new AutoScroll(defaultScrollSettings);
+    this.cdRef.detectChanges();
   }
 
   /**
    * Фильтрация элементов выпадающего списка
-   * @param filterText: string
+   * @param filterText: Текст фильтрации
    */
-  public callTest(filterText: string) {
+  public callTest(filterText: string): void {
     const regexp = new RegExp(filterText.trim() || '\\d+', 'ig');
     const newData = this.backupData.filter((option) => ~option.value.search(regexp));
     this.options = filterText ? newData : this.backupData;
@@ -134,6 +146,7 @@ export default class DropDownComponent implements OnInit {
    * @param event Объект события
    */
   public onKeyDownPanel(event: KeyboardEvent): void {
+    // TODO: Убрать deprecated
     const keyCode = event.keyCode || event.charCode;
     switch (keyCode) {
       case KeyboardCodes.ArrowUP:
@@ -160,7 +173,6 @@ export default class DropDownComponent implements OnInit {
 
   /**
    * Обработчик клика
-   * @param event Объект события
    */
   public onClickPanel(): void {
     this.toggleActive();
@@ -172,23 +184,25 @@ export default class DropDownComponent implements OnInit {
   private toggleActive(active?: boolean): void {
     this.active = active ?? !this.active;
     if (!this.active) {
-      this.dropDown.nativeElement.focus();
+      this.dropDownRef.nativeElement.focus();
     }
-    this.updateScrollSettings({ active: this.active });
+    this.autoScroll?.updateScrollSettings({ active: this.active });
   }
 
   /**
    * Событие переключения активной опции кликом
-   * @param event Событие клика выбора опции
-   * @param option Опция
+   * @param option Опция выпадающего списка
    */
-  public onClickOption(event: MouseEvent, option: DropDownOption): void {
+  public onClickOption(option: DropDownOption): void {
     this.currentOption = option;
     this.toggleActive();
   }
 
   /**
    * Опора рендеринга
+   * @param _ Номер опции
+   * @param option Опция
+   * @return Значения для опоры рендеринга
    */
   public trackOptionId(_: number, option: DropDownOption): number {
     return option.key as number;
@@ -200,28 +214,37 @@ export default class DropDownComponent implements OnInit {
    */
   private changeOption(keyCode: number): void {
     const isArrowUp = keyCode === KeyboardCodes.ArrowUP;
-    const step = isArrowUp ? -1 : 1;
     const start = isArrowUp ? 0 : this.dropDownOptions.length - 1;
     const isBoundaryOption = this.curOption?.key === this.dropDownOptions[start].key;
     if (isBoundaryOption) {
       return;
     }
-    const newOptionIndex = this.curOption ? (this.curOption as any).key + step : 0;
+    const newOptionIndex = this.newOptionIndex(keyCode);
     this.currentOption = this.dropDownOptions[newOptionIndex];
+  }
+
+  /**
+   * Получить новый индекс опции по коду клавиши
+   * @param keyCode Код клавиши переключения опции
+   */
+  private newOptionIndex(keyCode: number): number {
+    const isArrowUp = keyCode === KeyboardCodes.ArrowUP;
+    const defaultElementNumber = -1;
+    const step = isArrowUp ? -1 : 1;
+    let newOptionIndex = this.curOption ? (this.curOption as any).key + step : defaultElementNumber;
+    if (!isArrowUp && !this.curOption) {
+      newOptionIndex = 0;
+    }
+
+    return newOptionIndex;
   }
 
   /**
    * Обновить ключи рендеринга
    * @param options Данные выпадающего списка
+   * @return Обновлённые ключи рендеринга опций
    */
   private updateKeys(options: DropDownOption[]): DropDownOption[] {
     return options.map((opt, index) => ({ ...opt, key: index }));
-  }
-
-  /**
-   * Обновить настройки скроллинга
-   */
-  private updateScrollSettings(scrollSettings: Partial<ScrollSettings>): void {
-    this.dropDownService.updateScrollSettings(scrollSettings);
   }
 }

@@ -1,14 +1,15 @@
 <div
-  class="drop-down"
-  data-test-id="test"
-  [ngClass]="{ 'drop-down_active': active }"
-  (keydown)="onKeyDownPanel($event)"
-  role="button"
-  [attr.aria-expanded]="this.active"
-  aria-haspopup="true"
   #dropDown
+  class="drop-down"
+  [ngClass]="{ 'drop-down_active': active }"
+  [attr.aria-expanded]="this.active"
+  [appAutoScrollElement]="autoScroll"
+  data-test-id="test"
+  role="button"
+  aria-haspopup="true"
   appAutoFocusOut
   tabindex="0"
+  (keydown)="onKeyDownPanel($event)"
 >
   <input
     class="drop-down__field"
@@ -25,9 +26,9 @@
   <ng-container *ngIf="true">
     <div
       class="drop-down__panel"
-      [@openClose]="active ? 'open' : 'closed'"
-      (@openClose.start)="$event.element.style.display = 'block'"
-      (@openClose.done)="$event.element.style.display = $event.toState === 'closed' ? 'none' : false"
+      [@openClosePanel]="active ? 'open' : 'closed'"
+      (@openClosePanel.start)="$event.element.style.display = 'block'"
+      (@openClosePanel.done)="$event.element.style.display = $event.toState === 'closed' ? 'none' : ''"
     >
       <ng-container *ngIf="filter">
         <div class="drop-down__filter">
@@ -39,14 +40,14 @@
           ></app-filter>
         </div>
       </ng-container>
-      <div class="drop-down__options">
+      <div #dropDownList class="drop-down__options">
         <ng-container *ngFor="let item of dropDownOptions; trackBy: trackOptionId">
           <div
             class="drop-down__item"
             [ngClass]="{
               'drop-down__item_focused': item.id === curOption?.id
             }"
-            (click)="onClickOption($event, item)"
+            (click)="onClickOption(item)"
             role="button"
           >
             {{ item.value }}
